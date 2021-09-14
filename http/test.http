@@ -1,0 +1,2 @@
+### Invocar a la raiz
+GET http://localhost:3000/
