@@ -1,2 +1,13 @@
+### Crear nuevo usuario
+POST http://localhost:3000/user
+Content-Type: application/json
+
+{
+    "username": "jperez",
+    "password": "12345678"
+}
+
+
 ### Invocar a la raiz
 GET http://localhost:3000/
+
