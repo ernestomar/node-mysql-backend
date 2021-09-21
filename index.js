@@ -36,13 +36,30 @@ conn.connect(
     }
 );
 
+// Valida si un token que me envio el cliente (navegador, flutter, angular, vue) es valido
+function validateToken(token) {
+    try {
+        const jwtObject = jwt.verify(token,"11223344")
+        return jwtObject
+    } catch(err) {
+        return null;
+    }
+}
+
 app.get("/", (req, res, next) => {
 
+    // Para authenticar
     const token = req.headers.authorization;
-    if ( !validateToken(token) ) { //si el token no es valido retorno error
-        res.status(403).render();
+    const tokenObject = validateToken(token);
+    let userId = null;
+    if (tokenObject) { // Si la validación del token es correcta obtengo el usuario
+        console.log("AUTHN correcta: ", tokenObject)
+        userId = tokenObject.sub;
+    } else { //si el token no es valido retorno null y if(null) -> false
+        res.sendStatus(403); // Retorno error Prohibido
+        return;
     }
-    const sql = "SELECT * FROM task";
+    const sql = "SELECT * FROM task"; // WHERE userId = ?
 
     conn.query( sql, 
         function (err, result) { // CALLBACK HELL -> PROMISES CASCADE HELL -> ASYNC AWAIT
@@ -113,23 +130,14 @@ app.post("/auth", jsonParser, (req, res, next) => {
 // Esta funcion construye un token seguro
 function buildToken(userId, username) {
     const payload = {
-        userId: userId,
-        username: username
+        sub: userId,
+        username: username,
+        exp: Math.floor(Date.now() / 1000) + (60 * 2)
     }
     return jwt.sign(payload, "11223344");
 }
 
-// Valida si un token que me envio el cliente (navegador, flutter, angular, vue) es valido
-function validateToken(token) {
-    let result = false;
-    try {
-        jwt.verify(token,"11223344")
-        result = true;
-    } catch(err) {
-        // Do nothing
-    }
-    return result;
-}
+
 
 app.listen(3000, () => {
     console.log("Servidor HTTP funcionando");

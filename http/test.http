@@ -8,6 +8,18 @@ Content-Type: application/json
 }
 
 
+# GET http://localhost:3000/login?username=jperez&password=123456
+
+### Authentication
+POST http://localhost:3000/auth
+Content-Type: application/json
+
+{
+    "username": "jperez",
+    "password": "12345678"
+}
+
 ### Invocar a la raiz
 GET http://localhost:3000/
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsInVzZXJuYW1lIjoianBlcmV6IiwiaWF0IjoxNjMxODQxODU2fQ.UmBBON528-oJ1LQwDyWVCWl6oUR2CCT9AVNnKOmv6uA
 
